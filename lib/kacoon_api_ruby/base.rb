@@ -58,7 +58,7 @@ module KacoonApiRuby
 
       JSONParser.new(response)
     rescue HTTP::Error => e
-      raise RequestError, e.message
+      raise KacoonApiRuby::RequestError, e.message
     end
 
     def default_headers(token: nil)
@@ -77,9 +77,14 @@ module KacoonApiRuby
     end
 
     def validate_errors(response)
-      return unless response[:errors].present?
-
-      ErrorParser.raise_errors_from(code: response[:errors].first[:code], error_message: response[:message])
+      if response[:errors].present?
+        ErrorParser.raise_errors_from(
+          code: response[:errors].first[:code],
+          error_message: response[:message]
+        )
+      elsif response[:severity]
+        raise KacoonApiRuby::RequestError, response[:message]
+      end
     end
 
     def build_url(path)
