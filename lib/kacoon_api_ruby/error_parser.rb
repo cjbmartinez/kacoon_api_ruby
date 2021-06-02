@@ -8,6 +8,10 @@ module KacoonApiRuby
         raise KacoonApiRuby::UnexpectedError
       end
 
+      def raise_request_error(message)
+        raise KacoonApiRuby::RequestError, message
+      end
+
       private
 
       def raise_error_for(code, error_message)

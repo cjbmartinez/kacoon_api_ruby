@@ -25,7 +25,7 @@ module KacoonApiRuby
     end
 
     def get(path:, payload: {})
-      auth_token = authenticate[:token]
+      auth_token = authenticate.parsed_response[:token]
       response = http_call(method: :get, path: path, token: auth_token, params: payload)
       parsed_response = response.parsed_response
 
@@ -58,7 +58,7 @@ module KacoonApiRuby
 
       JSONParser.new(response)
     rescue HTTP::Error => e
-      raise KacoonApiRuby::RequestError, e.message
+      ErrorParser.raise_request_error(e.message)
     end
 
     def default_headers(token: nil)
@@ -83,7 +83,7 @@ module KacoonApiRuby
           error_message: response[:message]
         )
       elsif response[:severity]
-        raise KacoonApiRuby::RequestError, response[:message]
+        ErrorParser.raise_request_error(response[:message])
       end
     end
 
