@@ -48,7 +48,7 @@ module KacoonApiRuby
 
     def authenticate
       authentication_body = { key: api_key, secret: api_secret }
-      http_call(method: 'post', path: '/clients/auth', json: authentication_body)
+      http_call(method: :post, path: '/clients/auth', json: authentication_body)
     end
 
     def http_call(method:, path:, token: nil, json: {}, params: {})
